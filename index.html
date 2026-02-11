@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyApproved - Interactive Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style-addons.css">
+</head>
+
+<body class="theme-transition">
+
+    <header class="main-header">
+        <div class="logo">EasyApproved</div>
+        <div class="controls">
+            <button id="lang-toggle" class="icon-btn" aria-label="Toggle Language">
+                <span class="lang-text">ES</span>
+            </button>
+            <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme">
+                <!-- Sun Icon -->
+                <svg class="sun-icon hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <!-- Moon Icon -->
+                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <!-- Reordered and Renamed Navigation -->
+        <button class="nav-btn active" data-target="creator-section" data-i18n="nav_create">Create Quiz</button>
+        <button class="nav-btn" data-target="create-flash-section" data-i18n="nav_create_flash">Create
+            Flashcards</button>
+        <button class="nav-btn" data-target="modify-section" data-i18n="nav_modify">Modify Data</button>
+        <button class="nav-btn" data-target="merge-section" data-i18n="nav_merge">Merge</button>
+        <button class="nav-btn" data-target="quiz-section" data-i18n="nav_take">Take Quiz</button>
+        <button class="nav-btn" data-target="flashcard-section" data-i18n="nav_flashcards">Study Flashcards</button>
+        <button class="nav-btn" data-target="info-section" data-i18n="nav_info">Info</button>
+    </nav>
+
+    <main class="container">
+        <!-- Section 1: Creator -->
+        <section id="creator-section" class="active-section">
+            <div class="card">
+                <h2 data-i18n="creator_title">Create New Quiz</h2>
+                <div class="input-group">
+                    <label data-i18n="creation_mode_label">Mode:</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="creation-mode" value="new" checked>
+                            <span data-i18n="mode_new">New Test</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="creation-mode" value="existing">
+                            <span data-i18n="mode_existing">Add to Existing</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="new-test-container" class="input-group">
+                    <label for="test-name-input" data-i18n="test_name_label">Test Name:</label>
+                    <input type="text" id="test-name-input" placeholder="e.g. Mathematics 101">
+                </div>
+
+                <div id="existing-test-container" class="input-group hidden">
+                    <label for="existing-test-select" data-i18n="select_test_label">Select Test:</label>
+                    <select id="existing-test-select" class="styled-select"></select>
+                </div>
+                <div class="input-group">
+                    <label for="raw-input" data-i18n="creator_label">Paste questions here (Question + Answers):</label>
+                    <textarea id="raw-input"
+                        placeholder="Question 1...&#10;Answer A&#10;Answer B&#10;Answer C&#10;Answer D&#10;&#10;Question 2..."></textarea>
+                </div>
+                <button id="parse-btn" class="btn-primary" data-i18n="btn_parse">Process Questions</button>
+            </div>
+
+            <div id="selection-area" class="card hidden">
+                <h3 data-i18n="selection_title">Select Correct Answers</h3>
+                <p class="subtitle" data-i18n="selection_subtitle">Click on the correct answer and optionally add an
+                    explanation.</p>
+                <div id="questions-preview"></div>
+                <div class="action-row">
+                    <button id="save-quiz-btn" class="btn-primary" data-i18n="btn_save">Save Quiz</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- New Section: Create Flashcards -->
+        <section id="create-flash-section" class="hidden-section">
+            <div class="card">
+                <h2 data-i18n="create_flash_title">Create Flashcard Deck</h2>
+
+                <div class="input-group">
+                    <label data-i18n="creation_mode_label">Mode:</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="flash-creation-mode" value="new" checked>
+                            <span data-i18n="mode_new">New Deck</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="flash-creation-mode" value="existing">
+                            <span data-i18n="mode_existing">Add to Existing</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="new-flash-container" class="input-group">
+                    <label for="flash-deck-name" data-i18n="flash_deck_name_label">Deck Name:</label>
+                    <input type="text" id="flash-deck-name" placeholder="e.g. Vocabulary"
+                        data-i18n-placeholder="placeholder_deck_name">
+                </div>
+
+                <div id="existing-flash-container" class="input-group hidden">
+                    <label for="existing-flash-select" data-i18n="select_deck_label">Select Deck:</label>
+                    <select id="existing-flash-select" class="styled-select"></select>
+                </div>
+                <div class="input-group">
+                    <label for="flash-raw-input" data-i18n="flash_create_label">Paste Terms (Front | Back | Optional
+                        Hint):</label>
+                    <textarea id="flash-raw-input"
+                        placeholder="Apple | Manzana | A red fruit&#10;House | Casa&#10;Car | Coche"
+                        data-i18n-placeholder="placeholder_flash_input"></textarea>
+                </div>
+                <button id="create-flash-deck-btn" class="btn-primary" data-i18n="btn_create_deck">Create Deck</button>
+            </div>
+        </section>
+
+        <!-- Section 2: Modify -->
+        <section id="modify-section" class="hidden-section">
+            <div class="card">
+                <h2 data-i18n="modify_title">Modify Current Test</h2>
+
+                <div class="input-group mb-2">
+                    <label for="modify-quiz-select" data-i18n="select_test_label">Select Test to Modify:</label>
+                    <select id="modify-quiz-select" class="styled-select"></select>
+                </div>
+
+                <div class="file-actions">
+                    <div class="file-group">
+                        <input type="file" id="json-upload-input" accept=".json" class="hidden">
+                        <button id="upload-btn" class="btn-secondary" data-i18n="btn_upload">Merge JSON
+                            (Upload)</button>
+                    </div>
+                    <button id="download-btn" class="btn-secondary" data-i18n="btn_download">Download JSON</button>
+                    <button id="btn-deduplicate" class="btn-secondary" data-i18n="btn_deduplicate">Delete
+                        Duplicates</button>
+                </div>
+
+                <div class="questions-list-header">
+                    <h3 data-i18n="questions_list_title">Current Questions</h3>
+                    <span id="total-questions-count" class="badge">0</span>
+                </div>
+
+                <div id="modify-list" class="modify-list-container">
+                    <!-- List items injected here -->
+                    <p class="empty-msg" data-i18n="msg_no_questions">No questions available.</p>
+                </div>
+
+                <!-- Edit Question Container (Hidden by default) -->
+                <div id="edit-question-container" class="hidden">
+                    <h3 data-i18n="edit_title">Edit Question</h3>
+                    <div class="input-group">
+                        <label data-i18n="edit_question_label">Question Text:</label>
+                        <textarea id="edit-question-text" rows="3"></textarea>
+                    </div>
+                    <div id="edit-answers-container">
+                        <!-- Dynamic answer inputs will go here -->
+                    </div>
+                    <div class="input-group mt-2">
+                        <label data-i18n="edit_explanation_label">Explanation (Optional):</label>
+                        <textarea id="edit-explanation" rows="2"></textarea>
+                    </div>
+                    <div class="btn-row">
+                        <button id="cancel-edit-btn" class="btn-secondary" data-i18n="btn_cancel">Cancel</button>
+                        <button id="save-edit-btn" class="btn-primary" data-i18n="btn_save_changes">Save
+                            Changes</button>
+                    </div>
+                </div>
+
+
+                <button id="clear-all-btn" class="btn-danger mt-4" data-i18n="btn_clear_all">Delete All
+                    Questions</button>
+                <button id="delete-test-btn" class="btn-danger mt-4 ml-2" data-i18n="btn_delete_test">Delete Entire
+                    Test</button>
+            </div>
+        </section>
+
+        <!-- Section 3: Quiz -->
+        <section id="quiz-section" class="hidden-section">
+            <div id="quiz-start-view" class="card fade-in">
+                <h2 data-i18n="quiz_ready_title">Ready to Start?</h2>
+
+                <div class="input-group mb-2">
+                    <label for="quiz-select" data-i18n="select_test_label">Select Test:</label>
+                    <select id="quiz-select" class="styled-select"></select>
+                </div>
+
+                <p id="quiz-status-msg">No quiz loaded.</p>
+                <div class="actions">
+                    <button id="start-btn" class="btn-primary" disabled data-i18n="btn_start">Start Quiz</button>
+                    <button id="reset-stats-btn" class="btn-secondary hidden" data-i18n="btn_reset">Reset
+                        Progress</button>
+                </div>
+            </div>
+
+            <div id="quiz-active-view" class="card hidden">
+                <div class="progress-bar-container">
+                    <div id="progress-bar" class="progress-bar"></div>
+                </div>
+                <div class="quiz-header">
+                    <span id="question-counter">Question 1/10</span>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <span id="streak-display" class="streak-badge hidden">🔥 0</span>
+                        <button id="exit-active-btn" class="btn-small btn-secondary" data-i18n="btn_exit">Exit</button>
+                        <button id="restart-active-btn" class="btn-small btn-secondary"
+                            data-i18n="btn_restart_active">Restart Quiz</button>
+                    </div>
+                    <span id="score-display">Score: 0</span>
+                </div>
+                <div class="question-container">
+                    <h3 id="question-text">Question goes here...</h3>
+                    <div id="options-container" class="options-grid">
+                        <!-- Options injected here -->
+                    </div>
+                </div>
+                <div id="feedback-area" class="hidden">
+                    <div class="feedback-header">
+                        <p id="feedback-msg"></p>
+                    </div>
+                    <div id="explanation-box" class="explanation-box hidden">
+                        <strong data-i18n="explanation_prefix">Explanation:</strong> <span id="explanation-text"></span>
+                    </div>
+                    <div class="feedback-row">
+                        <button id="next-question-btn" class="btn-primary" data-i18n="btn_next">Next</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="quiz-results-view" class="card hidden">
+                <h2 data-i18n="results_title">Quiz Completed!</h2>
+                <div class="score-circle">
+                    <span id="final-score">8/10</span>
+                </div>
+                <p id="results-message"></p>
+                <div class="actions">
+                    <button id="retry-failed-btn" class="btn-primary" data-i18n="btn_retry_failed">Retry Failed</button>
+                    <button id="restart-all-btn" class="btn-secondary" data-i18n="btn_restart_all">Restart All</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3.5: Merge Tests -->
+        <section id="merge-section" class="hidden-section">
+            <div class="card">
+                <h2 data-i18n="merge_title">Combine Multiple Tests</h2>
+                <p class="subtitle" data-i18n="merge_subtitle">Select tests to merge into a new single test.</p>
+
+                <div class="input-group">
+                    <label for="merge-name-input" data-i18n="merge_name_label">New Test Name:</label>
+                    <input type="text" id="merge-name-input" placeholder="e.g. Final Exam">
+                </div>
+
+                <div class="questions-list-header">
+                    <h3 data-i18n="available_tests_title">Available Tests</h3>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button id="select-all-merge-btn" class="btn-small btn-secondary"
+                            data-i18n="btn_select_all">Select All</button>
+                        <button id="deselect-all-merge-btn" class="btn-small btn-secondary"
+                            data-i18n="btn_deselect_all">Deselect All</button>
+                    </div>
+                </div>
+
+                <div id="merge-list-container" class="modify-list-container">
+                    <!-- Checkboxes injected here -->
+                </div>
+
+                <div class="btn-row mt-4" style="justify-content: flex-end;">
+                    <button id="create-merged-btn" class="btn-primary" data-i18n="btn_create_merged">Merge &
+                        Create</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3.8: Flashcards -->
+        <section id="flashcard-section" class="hidden-section">
+            <!-- Flashcard Setup View (Study Only) -->
+            <div id="flashcard-setup-view" class="card">
+                <h2 data-i18n="flash_title">Flashcard Study Mode</h2>
+                <p class="subtitle" data-i18n="flash_subtitle">Study any test as flashcards.</p>
+
+                <div class="input-group mb-2">
+                    <label for="flashcard-quiz-select" data-i18n="select_deck_label">Select Deck:</label>
+                    <select id="flashcard-quiz-select" class="styled-select"></select>
+                </div>
+
+                <div class="input-group"
+                    style="flex-direction: row; align-items: center; gap: 0.5rem; margin-bottom: 2rem;">
+                    <input type="checkbox" id="flash-shuffle-toggle" checked style="width: auto; margin: 0;">
+                    <label for="flash-shuffle-toggle" data-i18n="flash_shuffle_label"
+                        style="margin: 0; cursor: pointer;">Shuffle Deck</label>
+                </div>
+
+                <div class="actions">
+                    <button id="start-flash-btn" class="btn-primary" data-i18n="btn_start_flash">Start Studying</button>
+                </div>
+            </div>
+
+            <!-- Flashcard Active View -->
+            <div id="flashcard-active-view" class="card hidden">
+                <div class="quiz-header">
+                    <span id="flash-counter">Card 1/10</span>
+                    <div id="flash-streak-display" class="streak-badge hidden">🔥 0</div>
+                    <button id="exit-flash-btn" class="btn-small btn-secondary" data-i18n="btn_exit">Exit</button>
+                </div>
+                <div class="progress-container">
+                    <div id="flash-progress-bar" class="progress-bar" style="width: 0%"></div>
+                </div>
+
+                <div id="flash-card-element" class="flashcard-container">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-text" id="flash-front-text">Front Text</div>
+                            <!-- Hint Button Container -->
+                            <div id="flash-hint-container" class="mt-4 hidden">
+                                <button id="flash-hint-btn" class="btn-small btn-secondary"
+                                    style="border-radius: 2rem;">💡 Hint</button>
+                                <p id="flash-hint-text" class="hidden"
+                                    style="margin-top: 0.5rem; font-style: italic; color: var(--text-secondary);"></p>
+                            </div>
+                            <div class="flashcard-sub" data-i18n="flash_tap">Tap to flip</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-text" id="flash-back-text">Back Text</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="flash-controls" class="flashcard-controls">
+                    <button id="flash-fail-btn" class="btn-flash-fail" data-i18n="flash_btn_fail">Hard (X)</button>
+                    <button id="flash-pass-btn" class="btn-flash-pass" data-i18n="flash_btn_pass">Easy (✓)</button>
+                </div>
+            </div>
+
+            <!-- Flashcard Results View -->
+            <div id="flashcard-results-view" class="card hidden">
+                <h2 data-i18n="results_title">Session Completed!</h2>
+                <div class="score-circle">
+                    <span id="flash-score-label" class="score-label"></span>
+                    <span id="flash-final-score">100%</span>
+                </div>
+                <!-- Message removed from outside -->
+                <div class="actions">
+                    <button id="flash-retry-btn" class="btn-primary" data-i18n="btn_retry_failed">Retry Missed</button>
+                    <button id="flash-restart-btn" class="btn-secondary" data-i18n="btn_restart_all">Restart
+                        All</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Info & Prompts -->
+        <section id="info-section" class="hidden-section">
+            <div class="card">
+                <h2 data-i18n="info_title">How to Use</h2>
+                <div class="info-content">
+                    <p data-i18n="info_p1">1. Go to "Create Test".</p>
+                    <p data-i18n="info_p2">2. Paste your questions. Ensure they are separated by double line breaks.</p>
+                    <p data-i18n="info_p3">3. Click "Process", then select the correct answers.</p>
+                    <p data-i18n="info_p4">4. Go to "Take Quiz" to test your knowledge.</p>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <h2 data-i18n="prompt_title">AI Prompt Helper</h2>
+                <p data-i18n="prompt_desc">Copy this prompt to ChatGPT/Claude to generate questions in the correct
+                    format:</p>
+                <div class="code-block-container">
+                    <pre
+                        id="ai-prompt-text">Format each question exactly like this (strictly only questions and answers, no other text):
+
+Question text?
+Option A
+Option B
+Option C
+Option D
+
+Separate each question block with a double new line. Do not include A) B) C) prefixes if possible, just the text. Do not include the answer key at the bottom.</pre>
+                    <button id="copy-prompt-btn" class="btn-small" data-i18n="btn_copy">Copy</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <a href="https://x.com/Havyonn" target="_blank" rel="noopener noreferrer" class="footer-link">
+            <svg class="x-logo" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                fill="currentColor">
+                <path
+                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+            <span class="x-handle">@Havyonn</span>
+        </a>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
