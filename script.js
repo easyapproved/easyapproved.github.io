@@ -122,6 +122,9 @@ const I18N = {
         msg_duplicates_found: "Encontrados {count} duplicados. ¿Borrarlos?",
         msg_duplicates_removed: "Eliminados {count} duplicados.",
         msg_no_duplicates: "No se encontraron duplicados.",
+        merge_subtitle: "Selecciona tests para unir en un nuevo test único.",
+        merge_name_label: "Nombre del Nuevo Test:",
+        merge_name_placeholder: "ej. Examen Final",
     },
     en: {
         nav_create: "Create Test",
@@ -243,6 +246,9 @@ const I18N = {
         msg_duplicates_found: "Found {count} duplicate(s). Delete them?",
         msg_duplicates_removed: "Removed {count} duplicates.",
         msg_no_duplicates: "No duplicates found.",
+        merge_subtitle: "Select tests to merge into a new single test.",
+        merge_name_label: "New Test Name:",
+        merge_name_placeholder: "e.g. Final Exam",
     }
 };
 
@@ -393,6 +399,11 @@ class LangManager {
         const aiPrompt = document.getElementById('ai-prompt-text');
         if (aiPrompt && I18N[lang]['ai_prompt_text']) {
             aiPrompt.innerText = I18N[lang]['ai_prompt_text'];
+        }
+
+        const mergeNameInput = document.getElementById('merge-name-input');
+        if (mergeNameInput && I18N[lang]['merge_name_placeholder']) {
+            mergeNameInput.placeholder = I18N[lang]['merge_name_placeholder'];
         }
 
         // Dispatch global event for app to listen
