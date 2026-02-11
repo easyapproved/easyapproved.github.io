@@ -248,6 +248,60 @@ const I18N = {
 
 // --- Managers ---
 
+// Mobile Menu Manager
+class MobileMenuManager {
+    constructor() {
+        this.menuToggle = document.getElementById('menu-toggle');
+        this.mainNav = document.getElementById('main-nav');
+        this.navOverlay = document.getElementById('nav-overlay');
+        this.navBtns = document.querySelectorAll('.nav-btn');
+        this.init();
+    }
+
+    init() {
+        if (!this.menuToggle || !this.mainNav || !this.navOverlay) return;
+
+        // Toggle menu on button click
+        this.menuToggle.addEventListener('click', () => this.toggleMenu());
+
+        // Close menu when overlay is clicked
+        this.navOverlay.addEventListener('click', () => this.closeMenu());
+
+        // Close menu when a nav button is clicked
+        this.navBtns.forEach(btn => {
+            btn.addEventListener('click', () => this.closeMenu());
+        });
+
+        // Close menu on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.mainNav.classList.contains('active')) {
+                this.closeMenu();
+            }
+        });
+    }
+
+    toggleMenu() {
+        const isActive = this.mainNav.classList.contains('active');
+        if (isActive) {
+            this.closeMenu();
+        } else {
+            this.openMenu();
+        }
+    }
+
+    openMenu() {
+        this.mainNav.classList.add('active');
+        this.navOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+    }
+
+    closeMenu() {
+        this.mainNav.classList.remove('active');
+        this.navOverlay.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+}
+
 // --- Managers ---
 
 class ThemeManager {
@@ -391,6 +445,7 @@ class QuizApp {
         this.themeManager = new ThemeManager();
         // Pass callback to update dynamic UI parts on language toggle
         this.langManager = new LangManager();
+        this.mobileMenuManager = new MobileMenuManager();
         this.state = {
             quizzes: {},
             currentQuizName: null,

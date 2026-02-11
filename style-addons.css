@@ -195,3 +195,41 @@
 .btn-flash-pass:active {
     transform: translateY(0);
 }
+
+/* Responsive Flashcard Styles */
+@media (max-width: 768px) {
+    .flashcard-container {
+        height: 250px;
+        max-width: 100%;
+    }
+
+    .flashcard-text {
+        font-size: 1.25rem;
+    }
+
+    .flashcard-controls {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .btn-flash-fail,
+    .btn-flash-pass {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .flashcard-container {
+        height: 220px;
+    }
+
+    .flashcard-text {
+        font-size: 1.1rem;
+    }
+
+    .flashcard-front,
+    .flashcard-back {
+        padding: 1.5rem;
+    }
+}
